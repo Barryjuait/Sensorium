@@ -1,6 +1,6 @@
-// Last version Oct 10th, 2015 ==> Fixed ITI (intertrial interval)
+// Last version Oct 1th, 2015 ==> Fixed ITI (intertrial interval)
 // GO/NOGO training protocol, where random GO/NOGO and neutral cues 
-// are delivered when a lever switch is pressed (it must be hold for 300-800 ms to make a "true press")
+// are delivered when a lever switch is pressed (it must be held for 300-800 ms to make a "true press")
 // Sebastian Barrientos, PhD in Neuroscience
 
 #include <toneAC.h>
@@ -25,17 +25,17 @@ unsigned long variable_delay;
 unsigned long end_time;
 int ITI = 500; // minimum intertrial interval (500ms)
 
-boolean listening = true;       // para saber si el arduino está escuchando la palanca o no.
-boolean available_trial = true; // para saber si se puede empezar un nuevo trial o no.
-boolean go_bool = false;        // para saber el tipo de trial (go o nogo)
-boolean nogo_bool = false;
-boolean true_press = false;     // para chequear si se apretó la palanca el suficiente tiempo.
-boolean nosepoke = false;
-boolean catch_trial = false;
-boolean neutral_trial = false;
+boolean listening = true;       // to know whether arduino is "listening" the lever
+boolean available_trial = true; // to know whether a new trial can be initiated
+boolean go_bool = false;        // to identify the current trial as GO
+boolean nogo_bool = false;      // to identify the current trial as NOGO
+boolean catch_trial = false;    // to identify the current trial as CATCH (empty cue)
+boolean neutral_trial = false;  // to identify the current trial as Neutral (not associated with reward or punishment)
 boolean neutral_bool = false;
+boolean true_press = false;     // to check if the lever was properly pressed
+boolean nosepoke = false;       // to check if a nosepoke was already done
 
-int sensor_state;               // estado de palanca y sensor
+int sensor_state;               // 
 int palanca_state;
 int previous_state;
 
