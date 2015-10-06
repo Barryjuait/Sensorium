@@ -1,4 +1,3 @@
-// Last version Oct 1th, 2015 ==> Fixed ITI (intertrial interval)
 // GO/NOGO training protocol, where random GO/NOGO and neutral cues 
 // are delivered when a lever switch is pressed (it must be held for 300-800 ms to make a "true press")
 // Sebastian Barrientos, PhD in Neuroscience
@@ -123,13 +122,12 @@ void non_cue()                     // function that commands non cues (catch_tri
 
 
 void onPress(Button& b) {
-  press_time = currentMicros / 1000;      //time stamp of the lever press
-  if (press_time - end_time >= ITI)
-    available_trial = true;
+  
   if (listening == true   && available_trial == true) // if Arduino is "listening"(reading) the lever, and a new trial can be initiated...
   {
-    // press_time = currentMicros / 1000;
-
+    press_time = currentMicros / 1000;      //time stamp of the lever press
+    if (press_time - end_time >= ITI)
+    {
     variable_delay = random (300000, 800001); 
     available_trial = false;
     enqueue(6, currentMicros + (variable_delay));  // Lever must be pressed for a random period of time between 300 and 800ms
@@ -141,6 +139,7 @@ void onPress(Button& b) {
     Serial.println("ON HOLD: ");
     Serial.println(variable_delay / 1000);         // How long the lever must be held
     Serial.println("                   ");
+    }
 
   }
 }
@@ -203,7 +202,7 @@ void dequeue()
             Serial.println("___________________");
             Serial.println("___________________");
             enqueue(4, currentMicros + 1000000);        // to turn off the valve after 1000 ms after activation
-            //available_trial = true;
+            available_trial = true;
             nosepoke = true;
             go_bool = false;
             previous_state = sensor_state;
@@ -217,7 +216,7 @@ void dequeue()
             Serial.println("13");
             Serial.println("___________________");
             Serial.println("___________________");
-            //available_trial = true;
+            available_trial = true;
             go_bool = false;
             previous_state = sensor_state;
             end_time = currentMicros / 1000;
@@ -254,7 +253,7 @@ void dequeue()
             Serial.println("23");
             Serial.println("___________________");
             Serial.println("___________________");
-            //available_trial = true;
+            available_trial = true;
             nogo_bool = false;
             previous_state = sensor_state;
             end_time = currentMicros / 1000;
@@ -278,7 +277,7 @@ void dequeue()
           Serial.println("___________________");
           Serial.println("___________________");
           previous_state = sensor_state;
-          //available_trial = true;
+          available_trial = true;
           nosepoke = true;
           catch_trial = false;
           neutral_trial = false;
@@ -297,7 +296,7 @@ void dequeue()
           Serial.println("___________________");
           Serial.println("___________________");
           previous_state = sensor_state;
-          //available_trial = true;
+          available_trial = true;
           catch_trial = false;
           neutral_trial = false;
           neutral_bool = false;
@@ -331,7 +330,7 @@ void dequeue()
         //        Serial.println(currentMicros/1000);
         digitalWrite(castigo, LOW);
         listening = true;
-        //available_trial = true;
+        available_trial = true;
         //noTone(SPEAKER);// DEBUG
       }
       
@@ -367,7 +366,7 @@ void dequeue()
           Serial.println("FALSE PRESS");
           Serial.println("___________________");
           Serial.println("___________________");
-          //available_trial = true;
+          available_trial = true;
           end_time = currentMicros / 1000;
         }
       }// end of lever press function
