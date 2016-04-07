@@ -14,6 +14,7 @@ int valve = 5;
 int castigo = 7;
 int leds = 6;
 int sync = A4;
+int rec_end_time = 20; //recording time in minutes
 
 unsigned long cue_time;
 unsigned long press_time;
@@ -33,6 +34,7 @@ boolean neutral_trial = false;  // to identify the current trial as Neutral (not
 boolean neutral_bool = false;
 boolean true_press = false;     // to check if the lever was properly pressed
 boolean nosepoke = false;       // to check if a nosepoke was already done
+boolean rec_end = false;
 
 int sensor_state;               // 
 int palanca_state;
@@ -386,17 +388,21 @@ void setup()
     queue_time[i] = 0;
   }
 
-  Serial.begin(9600);
-  Serial.println("GO/NO-GO training");
+    Serial.begin(9600);
   pinMode(LED, OUTPUT); //debug to led 13
   pinMode(SPEAKER, OUTPUT);
   pinMode(valve, OUTPUT);
+  pinMode(sync, OUTPUT);
   digitalWrite(valve, HIGH);
   pinMode(sensor, INPUT);
   pinMode(emisor, OUTPUT);
   pinMode(castigo, OUTPUT);
   digitalWrite(emisor, HIGH);  // IR emitter is always HIGH
   pinMode(leds, OUTPUT);
+  Serial.println("GO/NO-GO training");
+  digitalWrite(sync, HIGH);         // TTL pulse to define the recording start
+  delay(5);
+  digitalWrite(sync, LOW);
 
   // Assign callback functions
   palanca.pressHandler(onPress);
@@ -422,5 +428,17 @@ void loop()
     previous_state = sensor_state;
     nosepoke == false;
     end_time = currentMicros / 1000;
+  }
+  
+  if (currentMicros <= (rec_end_time*60001000) && (currentMicros) >= rec_end_time*60000000) //to signal the end of recording...if the rat continues pressing the lever, those trials should not be counted
+  {
+    Serial.println("END OF RECORDING");
+    Serial.println(currentMicros);
+    rec_end = true;
+    Serial.println("________________");
+    Serial.println("________________");
+    digitalWrite(sync, HIGH);
+    delay(5);
+    digitalWrite(sync, LOW);
   }
 }
